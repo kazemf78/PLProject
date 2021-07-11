@@ -8,6 +8,7 @@
 
 # DrRacket autosave files
 *.rkt~
+*.bak
 *.rkt.bak
 \#*.rkt#
 \#*.rkt#*#
