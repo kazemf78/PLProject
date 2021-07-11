@@ -1,0 +1,1525 @@
+0	g2267187	=	(g2267188)
+1	g2267188	=	(statements EOF)
+2	statements	=	(statement semicolon)
+3	statements	=	(statements statement semicolon)
+4	statement	=	(compoundstm)
+5	statement	=	(simplestm)
+6	simplestm	=	(VAR assign exp)
+7	simplestm	=	(return exp)
+8	simplestm	=	(return)
+9	simplestm	=	(global VAR)
+10	simplestm	=	(pass)
+11	simplestm	=	(break)
+12	simplestm	=	(continue)
+13	compoundstm	=	(print op exp cp)
+14	compoundstm	=	(def VAR op params cp colon statements)
+15	compoundstm	=	(def VAR op cp colon statements)
+16	compoundstm	=	(if exp colon statements else colon statements)
+17	compoundstm	=	(for VAR in exp colon statements)
+18	params	=	(VAR assign exp)
+19	params	=	(params comma VAR assign exp)
+20	exp	=	(disj)
+21	disj	=	(conj)
+22	disj	=	(disj or conj)
+23	conj	=	(inversion)
+24	conj	=	(conj and inversion)
+25	inversion	=	(not inversion)
+26	inversion	=	(comparison)
+27	comparison	=	(sum compareopsumpairs)
+28	comparison	=	(sum)
+29	compareopsumpairs	=	(compareopsumpair)
+30	compareopsumpairs	=	(compareopsumpairs compareopsumpair)
+31	compareopsumpair	=	(COMP sum)
+32	sum	=	(sum plus term)
+33	sum	=	(sum minus term)
+34	sum	=	(term)
+35	term	=	(term mult factor)
+36	term	=	(term div factor)
+37	term	=	(factor)
+38	factor	=	(plus factor)
+39	factor	=	(minus factor)
+40	factor	=	(power)
+41	power	=	(atom pow factor)
+42	power	=	(primary)
+43	primary	=	(atom)
+44	primary	=	(primary ob exp cb)
+45	primary	=	(primary op cp)
+46	primary	=	(primary op args cp)
+47	args	=	(exp)
+48	args	=	(args comma exp)
+49	atom	=	(VAR)
+50	atom	=	(BOOL)
+51	atom	=	(None)
+52	atom	=	(NUM)
+53	atom	=	(ob exps cb)
+54	atom	=	(ob cb)
+55	exps	=	(exps comma exp)
+56	exps	=	(exp)
+State 0
+	g2267187 -> . g2267188 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	statements					goto	2
+	def					shift	13
+	g2267188					goto	1
+	print					shift	7
+	break					shift	11
+	statement					goto	3
+
+State 1
+	g2267187 -> g2267188 . 
+
+
+State 2
+	g2267188 -> statements . EOF 
+	statements -> statements . statement semicolon 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	def					shift	13
+	print					shift	7
+	break					shift	11
+	statement					goto	16
+	EOF					accept	
+
+State 3
+	statements -> statement . semicolon 
+
+	semicolon					shift	18
+
+State 4
+	statement -> simplestm . 
+
+	semicolon					reduce	5
+
+State 5
+	statement -> compoundstm . 
+
+	semicolon					reduce	4
+
+State 6
+	simplestm -> VAR . assign exp 
+
+	assign					shift	19
+
+State 7
+	compoundstm -> print . op exp cp 
+
+	op					shift	20
+
+State 8
+	compoundstm -> if . exp colon statements else colon statements 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	21
+	power					goto	29
+	sum					goto	26
+
+State 9
+	simplestm -> return . exp 
+	simplestm -> return . 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	semicolon					reduce	8
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	40
+	sum					goto	26
+	power					goto	29
+
+State 10
+	simplestm -> pass . 
+
+	semicolon					reduce	10
+
+State 11
+	simplestm -> break . 
+
+	semicolon					reduce	11
+
+State 12
+	simplestm -> continue . 
+
+	semicolon					reduce	12
+
+State 13
+	compoundstm -> def . VAR op params cp colon statements 
+	compoundstm -> def . VAR op cp colon statements 
+
+	VAR					shift	41
+
+State 14
+	compoundstm -> for . VAR in exp colon statements 
+
+	VAR					shift	42
+
+State 15
+	simplestm -> global . VAR 
+
+	VAR					shift	43
+
+State 16
+	statements -> statements statement . semicolon 
+
+	semicolon					shift	44
+
+State 17
+	g2267188 -> statements EOF . 
+
+
+State 18
+	statements -> statement semicolon . 
+
+	pass					reduce	2
+	VAR					reduce	2
+	for					reduce	2
+	if					reduce	2
+	continue					reduce	2
+	return					reduce	2
+	global					reduce	2
+	def					reduce	2
+	semicolon					reduce	2
+	else					reduce	2
+	print					reduce	2
+	break					reduce	2
+	EOF					reduce	2
+
+State 19
+	simplestm -> VAR assign . exp 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	45
+	power					goto	29
+	sum					goto	26
+
+State 20
+	compoundstm -> print op . exp cp 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	46
+	power					goto	29
+	sum					goto	26
+
+State 21
+	compoundstm -> if exp . colon statements else colon statements 
+
+	colon					shift	47
+
+State 22
+	exp -> disj . 
+	disj -> disj . or conj 
+
+	or					shift	48
+	semicolon					reduce	20
+	comma					reduce	20
+	cp					reduce	20
+	colon					reduce	20
+	cb					reduce	20
+
+State 23
+	disj -> conj . 
+	conj -> conj . and inversion 
+
+	and					shift	49
+	semicolon					reduce	21
+	or					reduce	21
+	comma					reduce	21
+	cp					reduce	21
+	colon					reduce	21
+	cb					reduce	21
+
+State 24
+	conj -> inversion . 
+
+	and					reduce	23
+	semicolon					reduce	23
+	or					reduce	23
+	comma					reduce	23
+	cp					reduce	23
+	colon					reduce	23
+	cb					reduce	23
+
+State 25
+	inversion -> comparison . 
+
+	and					reduce	26
+	semicolon					reduce	26
+	or					reduce	26
+	comma					reduce	26
+	cp					reduce	26
+	colon					reduce	26
+	cb					reduce	26
+
+State 26
+	comparison -> sum . compareopsumpairs 
+	comparison -> sum . 
+	sum -> sum . plus term 
+	sum -> sum . minus term 
+
+	and					reduce	28
+	or					reduce	28
+	colon					reduce	28
+	plus					shift	53
+	cb					reduce	28
+	compareopsumpairs					goto	50
+	minus					shift	54
+	semicolon					reduce	28
+	cp					reduce	28
+	comma					reduce	28
+	compareopsumpair					goto	51
+	COMP					shift	52
+
+State 27
+	sum -> term . 
+	term -> term . mult factor 
+	term -> term . div factor 
+
+	and					reduce	34
+	or					reduce	34
+	colon					reduce	34
+	plus					reduce	34
+	cb					reduce	34
+	semicolon					reduce	34
+	minus					reduce	34
+	cp					reduce	34
+	comma					reduce	34
+	mult					shift	55
+	div					shift	56
+	COMP					reduce	34
+
+State 28
+	term -> factor . 
+
+	and					reduce	37
+	or					reduce	37
+	colon					reduce	37
+	plus					reduce	37
+	cb					reduce	37
+	minus					reduce	37
+	semicolon					reduce	37
+	cp					reduce	37
+	comma					reduce	37
+	mult					reduce	37
+	div					reduce	37
+	COMP					reduce	37
+
+State 29
+	factor -> power . 
+
+	and					reduce	40
+	or					reduce	40
+	colon					reduce	40
+	plus					reduce	40
+	cb					reduce	40
+	minus					reduce	40
+	semicolon					reduce	40
+	cp					reduce	40
+	comma					reduce	40
+	mult					reduce	40
+	div					reduce	40
+	COMP					reduce	40
+
+State 30
+	power -> primary . 
+	primary -> primary . ob exp cb 
+	primary -> primary . op cp 
+	primary -> primary . op args cp 
+
+	and					reduce	42
+	or					reduce	42
+	colon					reduce	42
+	op					shift	58
+	plus					reduce	42
+	cb					reduce	42
+	ob					shift	57
+	minus					reduce	42
+	semicolon					reduce	42
+	cp					reduce	42
+	comma					reduce	42
+	mult					reduce	42
+	div					reduce	42
+	COMP					reduce	42
+
+State 31
+	power -> atom . pow factor 
+	primary -> atom . 
+
+	and					reduce	43
+	or					reduce	43
+	colon					reduce	43
+	op					reduce	43
+	plus					reduce	43
+	cb					reduce	43
+	ob					reduce	43
+	minus					reduce	43
+	semicolon					reduce	43
+	pow					shift	59
+	cp					reduce	43
+	comma					reduce	43
+	mult					reduce	43
+	div					reduce	43
+	COMP					reduce	43
+
+State 32
+	atom -> NUM . 
+
+	and					reduce	52
+	or					reduce	52
+	colon					reduce	52
+	op					reduce	52
+	plus					reduce	52
+	cb					reduce	52
+	ob					reduce	52
+	minus					reduce	52
+	semicolon					reduce	52
+	pow					reduce	52
+	cp					reduce	52
+	comma					reduce	52
+	mult					reduce	52
+	div					reduce	52
+	COMP					reduce	52
+
+State 33
+	atom -> VAR . 
+
+	and					reduce	49
+	or					reduce	49
+	colon					reduce	49
+	op					reduce	49
+	plus					reduce	49
+	cb					reduce	49
+	ob					reduce	49
+	minus					reduce	49
+	semicolon					reduce	49
+	pow					reduce	49
+	cp					reduce	49
+	comma					reduce	49
+	mult					reduce	49
+	div					reduce	49
+	COMP					reduce	49
+
+State 34
+	atom -> BOOL . 
+
+	and					reduce	50
+	or					reduce	50
+	colon					reduce	50
+	op					reduce	50
+	plus					reduce	50
+	cb					reduce	50
+	ob					reduce	50
+	minus					reduce	50
+	semicolon					reduce	50
+	pow					reduce	50
+	cp					reduce	50
+	comma					reduce	50
+	mult					reduce	50
+	div					reduce	50
+	COMP					reduce	50
+
+State 35
+	factor -> plus . factor 
+
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	60
+	power					goto	29
+	primary					goto	30
+
+State 36
+	factor -> minus . factor 
+
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	61
+	power					goto	29
+	primary					goto	30
+
+State 37
+	atom -> None . 
+
+	and					reduce	51
+	or					reduce	51
+	colon					reduce	51
+	op					reduce	51
+	plus					reduce	51
+	cb					reduce	51
+	ob					reduce	51
+	minus					reduce	51
+	semicolon					reduce	51
+	pow					reduce	51
+	cp					reduce	51
+	comma					reduce	51
+	mult					reduce	51
+	div					reduce	51
+	COMP					reduce	51
+
+State 38
+	atom -> ob . exps cb 
+	atom -> ob . cb 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	cb					shift	64
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	exps					goto	63
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	62
+	power					goto	29
+	sum					goto	26
+
+State 39
+	inversion -> not . inversion 
+
+	BOOL					shift	34
+	VAR					shift	33
+	atom					goto	31
+	NUM					shift	32
+	not					shift	39
+	term					goto	27
+	plus					shift	35
+	comparison					goto	25
+	ob					shift	38
+	inversion					goto	65
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	sum					goto	26
+	power					goto	29
+	primary					goto	30
+
+State 40
+	simplestm -> return exp . 
+
+	semicolon					reduce	7
+
+State 41
+	compoundstm -> def VAR . op params cp colon statements 
+	compoundstm -> def VAR . op cp colon statements 
+
+	op					shift	66
+
+State 42
+	compoundstm -> for VAR . in exp colon statements 
+
+	in					shift	67
+
+State 43
+	simplestm -> global VAR . 
+
+	semicolon					reduce	9
+
+State 44
+	statements -> statements statement semicolon . 
+
+	pass					reduce	3
+	VAR					reduce	3
+	for					reduce	3
+	if					reduce	3
+	continue					reduce	3
+	return					reduce	3
+	global					reduce	3
+	def					reduce	3
+	semicolon					reduce	3
+	else					reduce	3
+	print					reduce	3
+	break					reduce	3
+	EOF					reduce	3
+
+State 45
+	simplestm -> VAR assign exp . 
+
+	semicolon					reduce	6
+
+State 46
+	compoundstm -> print op exp . cp 
+
+	cp					shift	68
+
+State 47
+	compoundstm -> if exp colon . statements else colon statements 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	statements					goto	69
+	def					shift	13
+	print					shift	7
+	break					shift	11
+	statement					goto	3
+
+State 48
+	disj -> disj or . conj 
+
+	conj					goto	70
+	term					goto	27
+	not					shift	39
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	power					goto	29
+	sum					goto	26
+
+State 49
+	conj -> conj and . inversion 
+
+	BOOL					shift	34
+	VAR					shift	33
+	atom					goto	31
+	NUM					shift	32
+	not					shift	39
+	term					goto	27
+	plus					shift	35
+	comparison					goto	25
+	ob					shift	38
+	inversion					goto	71
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	sum					goto	26
+	power					goto	29
+	primary					goto	30
+
+State 50
+	comparison -> sum compareopsumpairs . 
+	compareopsumpairs -> compareopsumpairs . compareopsumpair 
+
+	and					reduce	27
+	or					reduce	27
+	colon					reduce	27
+	cb					reduce	27
+	semicolon					reduce	27
+	cp					reduce	27
+	comma					reduce	27
+	compareopsumpair					goto	72
+	COMP					shift	52
+
+State 51
+	compareopsumpairs -> compareopsumpair . 
+
+	and					reduce	29
+	semicolon					reduce	29
+	or					reduce	29
+	comma					reduce	29
+	cp					reduce	29
+	colon					reduce	29
+	COMP					reduce	29
+	cb					reduce	29
+
+State 52
+	compareopsumpair -> COMP . sum 
+
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	term					goto	27
+	plus					shift	35
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	sum					goto	73
+	power					goto	29
+	primary					goto	30
+
+State 53
+	sum -> sum plus . term 
+
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	term					goto	74
+	plus					shift	35
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	power					goto	29
+	primary					goto	30
+
+State 54
+	sum -> sum minus . term 
+
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	term					goto	75
+	plus					shift	35
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	power					goto	29
+	primary					goto	30
+
+State 55
+	term -> term mult . factor 
+
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	76
+	power					goto	29
+	primary					goto	30
+
+State 56
+	term -> term div . factor 
+
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	77
+	power					goto	29
+	primary					goto	30
+
+State 57
+	primary -> primary ob . exp cb 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	78
+	power					goto	29
+	sum					goto	26
+
+State 58
+	primary -> primary op . cp 
+	primary -> primary op . args cp 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	cp					shift	81
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	79
+	args					goto	80
+	power					goto	29
+	sum					goto	26
+
+State 59
+	power -> atom pow . factor 
+
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	82
+	power					goto	29
+	primary					goto	30
+
+State 60
+	factor -> plus factor . 
+
+	and					reduce	38
+	or					reduce	38
+	colon					reduce	38
+	plus					reduce	38
+	cb					reduce	38
+	minus					reduce	38
+	semicolon					reduce	38
+	cp					reduce	38
+	comma					reduce	38
+	mult					reduce	38
+	div					reduce	38
+	COMP					reduce	38
+
+State 61
+	factor -> minus factor . 
+
+	and					reduce	39
+	or					reduce	39
+	colon					reduce	39
+	plus					reduce	39
+	cb					reduce	39
+	minus					reduce	39
+	semicolon					reduce	39
+	cp					reduce	39
+	comma					reduce	39
+	mult					reduce	39
+	div					reduce	39
+	COMP					reduce	39
+
+State 62
+	exps -> exp . 
+
+	comma					reduce	56
+	cb					reduce	56
+
+State 63
+	atom -> ob exps . cb 
+	exps -> exps . comma exp 
+
+	comma					shift	83
+	cb					shift	84
+
+State 64
+	atom -> ob cb . 
+
+	and					reduce	54
+	or					reduce	54
+	colon					reduce	54
+	op					reduce	54
+	plus					reduce	54
+	cb					reduce	54
+	ob					reduce	54
+	minus					reduce	54
+	semicolon					reduce	54
+	pow					reduce	54
+	cp					reduce	54
+	comma					reduce	54
+	mult					reduce	54
+	div					reduce	54
+	COMP					reduce	54
+
+State 65
+	inversion -> not inversion . 
+
+	and					reduce	25
+	semicolon					reduce	25
+	or					reduce	25
+	comma					reduce	25
+	cp					reduce	25
+	colon					reduce	25
+	cb					reduce	25
+
+State 66
+	compoundstm -> def VAR op . params cp colon statements 
+	compoundstm -> def VAR op . cp colon statements 
+
+	VAR					shift	86
+	cp					shift	87
+	params					goto	85
+
+State 67
+	compoundstm -> for VAR in . exp colon statements 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	88
+	power					goto	29
+	sum					goto	26
+
+State 68
+	compoundstm -> print op exp cp . 
+
+	semicolon					reduce	13
+
+State 69
+	statements -> statements . statement semicolon 
+	compoundstm -> if exp colon statements . else colon statements 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	def					shift	13
+	else					shift	89
+	print					shift	7
+	break					shift	11
+	statement					goto	16
+
+State 70
+	disj -> disj or conj . 
+	conj -> conj . and inversion 
+
+	and					shift	49
+	semicolon					reduce	22
+	or					reduce	22
+	comma					reduce	22
+	cp					reduce	22
+	colon					reduce	22
+	cb					reduce	22
+
+State 71
+	conj -> conj and inversion . 
+
+	and					reduce	24
+	semicolon					reduce	24
+	or					reduce	24
+	comma					reduce	24
+	cp					reduce	24
+	colon					reduce	24
+	cb					reduce	24
+
+State 72
+	compareopsumpairs -> compareopsumpairs compareopsumpair . 
+
+	and					reduce	30
+	semicolon					reduce	30
+	or					reduce	30
+	comma					reduce	30
+	cp					reduce	30
+	colon					reduce	30
+	COMP					reduce	30
+	cb					reduce	30
+
+State 73
+	compareopsumpair -> COMP sum . 
+	sum -> sum . plus term 
+	sum -> sum . minus term 
+
+	and					reduce	31
+	or					reduce	31
+	colon					reduce	31
+	plus					shift	53
+	cb					reduce	31
+	minus					shift	54
+	semicolon					reduce	31
+	cp					reduce	31
+	comma					reduce	31
+	COMP					reduce	31
+
+State 74
+	sum -> sum plus term . 
+	term -> term . mult factor 
+	term -> term . div factor 
+
+	and					reduce	32
+	or					reduce	32
+	colon					reduce	32
+	plus					reduce	32
+	cb					reduce	32
+	semicolon					reduce	32
+	minus					reduce	32
+	cp					reduce	32
+	comma					reduce	32
+	mult					shift	55
+	div					shift	56
+	COMP					reduce	32
+
+State 75
+	sum -> sum minus term . 
+	term -> term . mult factor 
+	term -> term . div factor 
+
+	and					reduce	33
+	or					reduce	33
+	colon					reduce	33
+	plus					reduce	33
+	cb					reduce	33
+	semicolon					reduce	33
+	minus					reduce	33
+	cp					reduce	33
+	comma					reduce	33
+	mult					shift	55
+	div					shift	56
+	COMP					reduce	33
+
+State 76
+	term -> term mult factor . 
+
+	and					reduce	35
+	or					reduce	35
+	colon					reduce	35
+	plus					reduce	35
+	cb					reduce	35
+	minus					reduce	35
+	semicolon					reduce	35
+	cp					reduce	35
+	comma					reduce	35
+	mult					reduce	35
+	div					reduce	35
+	COMP					reduce	35
+
+State 77
+	term -> term div factor . 
+
+	and					reduce	36
+	or					reduce	36
+	colon					reduce	36
+	plus					reduce	36
+	cb					reduce	36
+	minus					reduce	36
+	semicolon					reduce	36
+	cp					reduce	36
+	comma					reduce	36
+	mult					reduce	36
+	div					reduce	36
+	COMP					reduce	36
+
+State 78
+	primary -> primary ob exp . cb 
+
+	cb					shift	90
+
+State 79
+	args -> exp . 
+
+	comma					reduce	47
+	cp					reduce	47
+
+State 80
+	primary -> primary op args . cp 
+	args -> args . comma exp 
+
+	cp					shift	92
+	comma					shift	91
+
+State 81
+	primary -> primary op cp . 
+
+	and					reduce	45
+	or					reduce	45
+	colon					reduce	45
+	op					reduce	45
+	plus					reduce	45
+	cb					reduce	45
+	ob					reduce	45
+	minus					reduce	45
+	semicolon					reduce	45
+	cp					reduce	45
+	comma					reduce	45
+	mult					reduce	45
+	div					reduce	45
+	COMP					reduce	45
+
+State 82
+	power -> atom pow factor . 
+
+	and					reduce	41
+	or					reduce	41
+	colon					reduce	41
+	plus					reduce	41
+	cb					reduce	41
+	minus					reduce	41
+	semicolon					reduce	41
+	cp					reduce	41
+	comma					reduce	41
+	mult					reduce	41
+	div					reduce	41
+	COMP					reduce	41
+
+State 83
+	exps -> exps comma . exp 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	93
+	power					goto	29
+	sum					goto	26
+
+State 84
+	atom -> ob exps cb . 
+
+	and					reduce	53
+	or					reduce	53
+	colon					reduce	53
+	op					reduce	53
+	plus					reduce	53
+	cb					reduce	53
+	ob					reduce	53
+	minus					reduce	53
+	semicolon					reduce	53
+	pow					reduce	53
+	cp					reduce	53
+	comma					reduce	53
+	mult					reduce	53
+	div					reduce	53
+	COMP					reduce	53
+
+State 85
+	compoundstm -> def VAR op params . cp colon statements 
+	params -> params . comma VAR assign exp 
+
+	cp					shift	95
+	comma					shift	94
+
+State 86
+	params -> VAR . assign exp 
+
+	assign					shift	96
+
+State 87
+	compoundstm -> def VAR op cp . colon statements 
+
+	colon					shift	97
+
+State 88
+	compoundstm -> for VAR in exp . colon statements 
+
+	colon					shift	98
+
+State 89
+	compoundstm -> if exp colon statements else . colon statements 
+
+	colon					shift	99
+
+State 90
+	primary -> primary ob exp cb . 
+
+	and					reduce	44
+	or					reduce	44
+	colon					reduce	44
+	op					reduce	44
+	plus					reduce	44
+	cb					reduce	44
+	ob					reduce	44
+	minus					reduce	44
+	semicolon					reduce	44
+	cp					reduce	44
+	comma					reduce	44
+	mult					reduce	44
+	div					reduce	44
+	COMP					reduce	44
+
+State 91
+	args -> args comma . exp 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	100
+	power					goto	29
+	sum					goto	26
+
+State 92
+	primary -> primary op args cp . 
+
+	and					reduce	46
+	or					reduce	46
+	colon					reduce	46
+	op					reduce	46
+	plus					reduce	46
+	cb					reduce	46
+	ob					reduce	46
+	minus					reduce	46
+	semicolon					reduce	46
+	cp					reduce	46
+	comma					reduce	46
+	mult					reduce	46
+	div					reduce	46
+	COMP					reduce	46
+
+State 93
+	exps -> exps comma exp . 
+
+	comma					reduce	55
+	cb					reduce	55
+
+State 94
+	params -> params comma . VAR assign exp 
+
+	VAR					shift	101
+
+State 95
+	compoundstm -> def VAR op params cp . colon statements 
+
+	colon					shift	102
+
+State 96
+	params -> VAR assign . exp 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	103
+	power					goto	29
+	sum					goto	26
+
+State 97
+	compoundstm -> def VAR op cp colon . statements 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	statements					goto	104
+	def					shift	13
+	print					shift	7
+	break					shift	11
+	statement					goto	3
+
+State 98
+	compoundstm -> for VAR in exp colon . statements 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	statements					goto	105
+	def					shift	13
+	print					shift	7
+	break					shift	11
+	statement					goto	3
+
+State 99
+	compoundstm -> if exp colon statements else colon . statements 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	statements					goto	106
+	def					shift	13
+	print					shift	7
+	break					shift	11
+	statement					goto	3
+
+State 100
+	args -> args comma exp . 
+
+	comma					reduce	48
+	cp					reduce	48
+
+State 101
+	params -> params comma VAR . assign exp 
+
+	assign					shift	107
+
+State 102
+	compoundstm -> def VAR op params cp colon . statements 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	statements					goto	108
+	def					shift	13
+	print					shift	7
+	break					shift	11
+	statement					goto	3
+
+State 103
+	params -> VAR assign exp . 
+
+	comma					reduce	18
+	cp					reduce	18
+
+State 104
+	statements -> statements . statement semicolon 
+	compoundstm -> def VAR op cp colon statements . 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	def					shift	13
+	semicolon					reduce	15
+	print					shift	7
+	break					shift	11
+	statement					goto	16
+
+State 105
+	statements -> statements . statement semicolon 
+	compoundstm -> for VAR in exp colon statements . 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	def					shift	13
+	semicolon					reduce	17
+	print					shift	7
+	break					shift	11
+	statement					goto	16
+
+State 106
+	statements -> statements . statement semicolon 
+	compoundstm -> if exp colon statements else colon statements . 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	def					shift	13
+	semicolon					reduce	16
+	print					shift	7
+	break					shift	11
+	statement					goto	16
+
+State 107
+	params -> params comma VAR assign . exp 
+
+	conj					goto	23
+	disj					goto	22
+	not					shift	39
+	term					goto	27
+	ob					shift	38
+	None					shift	37
+	minus					shift	36
+	factor					goto	28
+	primary					goto	30
+	BOOL					shift	34
+	atom					goto	31
+	VAR					shift	33
+	NUM					shift	32
+	plus					shift	35
+	comparison					goto	25
+	inversion					goto	24
+	exp					goto	109
+	power					goto	29
+	sum					goto	26
+
+State 108
+	statements -> statements . statement semicolon 
+	compoundstm -> def VAR op params cp colon statements . 
+
+	pass					shift	10
+	VAR					shift	6
+	for					shift	14
+	continue					shift	12
+	if					shift	8
+	return					shift	9
+	global					shift	15
+	simplestm					goto	4
+	compoundstm					goto	5
+	def					shift	13
+	semicolon					reduce	14
+	print					shift	7
+	break					shift	11
+	statement					goto	16
+
+State 109
+	params -> params comma VAR assign exp . 
+
+	comma					reduce	19
+	cp					reduce	19
+

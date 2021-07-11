@@ -125,7 +125,8 @@
              (
               atom
               ((VAR) $1)
-              ((BOOL) (list 'bool $1))
+              ((true) (list 'bool #t))
+              ((false) (list 'bool #f))
               ((None) (list 'none))
               ((NUM) (list 'num $1))
               ((ob exps cb) (list 'list $2))  
@@ -150,26 +151,19 @@
   (simple-math-parser my-lexer)
  )
  )
-(define parse-string
-  (lambda (str)
-    (let ((my-lexer(lex-this simple-math-lexer (open-input-string str))))
-       (let ((parser-res (simple-math-parser my-lexer)))
-         parser-res))))
-(provide parse-string)
-;(define str-to-parse "a=0;b=1; c= 10;")
-;(parse-string str-to-parse)
-;(define str-to-parse "a=0;b=1; c= 10;")
-;(parse-string str-to-parse)
+;(parse-file "a=0;b=1")
 ;(parse-file "test-code.txt")
 ;test
 ;(define my-lexer (lex-this simple-math-lexer (open-input-string "return [8,9,10];return x[9][10]; return (((8 * 9 - 5))) * 4 ")))
 ;(let ((parser-res (simple-math-parser my-lexer))) parser-res)
 
-;(define str-to-parse "for iii in 3 : ahmad=4;;")
-;(define str-to-parse "a= a/b+c * 9;")
+(define str-to-parse "for iii in 3 : ahmad=4;;")
+;(define str-to-parse "a / b + c * 9")
 
-;(define my-lexer (lex-this simple-math-lexer (open-input-string str-to-parse)))
-;(define parsed (let ((parser-res (simple-math-parser my-lexer))) parser-res))
-;parsed
+;(define str-to-parse "a=0;b=1;while a < 10 do a=a+1;b=b*2 end")
+(define my-lexer (lex-this simple-math-lexer (open-input-string str-to-parse)))
+(define parsed (let ((parser-res (simple-math-parser my-lexer))) parser-res))
+;(define env empty-env)
+parsed
 ;"-------------------"
 ;(eval-commands parsed env)

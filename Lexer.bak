@@ -73,7 +73,7 @@
 
 ;test
 ;(define lex-this (lambda (lexer input) (lambda () (lexer input))))
-;(define my-lexer (lex-this simple-math-lexer (open-input-string "a = True;")))
+;(define my-lexer (lex-this simple-math-lexer (open-input-string "if kiarash 9 8 9.8 == 8")))
 ;(my-lexer)
 ;(my-lexer)
 ;(my-lexer)
