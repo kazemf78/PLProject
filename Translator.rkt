@@ -3,7 +3,23 @@
 (require "Env.rkt"
          "Parser.rkt"
          )
-    
+
+(define (extend-env-with-param env paramdefs)
+  (cond
+    [(null? paramdefs) env]
+    [else
+     (let ((first (car paramdefs)))
+       (let* ((lhs (cadr first))
+              (rhs (caddr first)))
+              (let ((new-env (env-assign env (cadr lhs) (eval-exp rhs env))))
+                (extend-env-with-param new-env (cdr paramdefs))
+                )
+        )
+      )
+    ]
+  )
+)
+
 (define eval-exp
   (lambda (exp env)
     (case (car exp)
@@ -91,9 +107,12 @@
       )))
 
 (define break-flag #f)
+(define main-env empty-env)
+(define global-vars '() )
 
 (define eval-cmd
   (lambda (cmd env)
+    
     (case (car env)
       [(continue break)
          env]
@@ -142,6 +161,25 @@
                   (set! break-flag #f)
                    for-env
                    ))]
+           [(funcdef)
+            (if (eq? (length (cdr sub-cmd)) 2)
+                (let* ((func-name (cadadr sub-cmd))
+                       (func-stat (caddr sub-cmd)))
+                  (begin
+                    (extend-env-func env func-name empty-env func-stat)
+                    )
+                  )
+                (let* ((func-name (cadadr sub-cmd))
+                       (func-param (caddr sub-cmd))
+                       (func-stat (cadddr sub-cmd)))
+                  (begin
+                    (let ((func-env (extend-env-with-param empty-env (cdr func-param))))
+                      (extend-env-func env func-name func-env func-stat)
+                    )
+                  )
+                )
+              )
+            ]
            [(continue)
             (list 'continue env)]
            [(break)
@@ -150,7 +188,8 @@
             env]
         ))]
       )])))
-(define str-to-parse "a= 0; b= 0;for i in [1, 2, 3, 4, 5]:  a= a+i; if i < 3: break; else: pass;; b= b+ 2;;")
+;(define str-to-parse "a= 0; b= 0;for i in [1, 2, 3, 4, 5]:  a= a+i; if i < 3: break; else: pass;; b= b+ 2;;")
+(define str-to-parse "def f(b=0,c=1): global a; a=a+1;; a = 2; b = f();")
 (define env empty-env)
 (eval-cmd (parse-string str-to-parse) env)
 ;(parse-string str-to-parse)

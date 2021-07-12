@@ -1,6 +1,6 @@
 #lang racket
 (provide empty-env env-assign env-get env-from-list in-env? initial-env
-         has-returned extend-env)
+         has-returned extend-env extend-env-func)
 
 (define empty-env (list 'empty))
 
@@ -8,11 +8,17 @@
 (define (extend-env env var val)
  (list 'extend var val env))
 
+(define (extend-env-func env func-name func-env func-body)
+  (list 'extend-func func-name func-env func-body env))
+         
 (define (in-env? env var)
  (case (car env)
   [(empty) #f]
   [(extend)
   (or (eqv? (cadr env) var) (in-env? (cadddr env) var))
+  ]
+  [(extend-func)
+  (or (eqv? (cadr env) var) (in-env? (cadddr (cdr env)) var))
   ]
   [else (raise "enviroment is not valid")]
  )
@@ -25,6 +31,9 @@
     (extend-env (cadddr env) var val)
     (extend-env (replace-var (cadddr env) var val) (cadr env) (caddr env))
    )]
+  [(extend-func)
+   (replace-var (cadddr (cdr env)) var val)
+  ]
   [(empty) (raise "variable is not defined")]
   [else (raise "enviroment is not valid")]
  )
@@ -40,7 +49,12 @@
     (caddr env)
     (env-get (cadddr env) var)
    )]
-  [(empty) (raise "variable is not defined")]
+  [(extend-func)
+   (if (eqv? (cadr env) var)
+    (list (cadr env) (caddr env) (cadddr env))
+    (env-get (cadddr (cdr env)) var)
+   )]
+  [(empty) (raise "variable or function is not defined")]
   [else (raise "enviroment is not valid")]
  )
  )
