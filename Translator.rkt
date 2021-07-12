@@ -102,6 +102,15 @@
        (let* ((rs (eval-exp (cadr exp) env))
               (ls (eval-exp (caddr exp) env)))
          (list-ref rs ls))]
+      [(funccallwithoutarg)
+       (let* (
+              (func-var (cadr (cadr exp)))
+              (whole-func (env-get env func-var))
+              (func-env (cadr whole-func))
+              (func-body (caddr whole-func))
+             )
+        )
+       ]
       [(none)
        'none]
       )))
@@ -180,6 +189,27 @@
                 )
               )
             ]
+           [(return)
+            (if (eq? (length sub-cmd) 2)
+                (let ((ret-exp (cadr sub-cmd)))
+                      (displayln ret-exp)
+                      )
+                (displayln "empty return")
+                
+                )
+            ]
+           [(global)
+            (let* (
+                   (var (cadr (cadr sub-cmd)))
+                   (val (env-get main-env var))
+                  )
+              (begin
+                (env-assign env var val)
+                
+                )
+             )
+             
+            ]
            [(continue)
             (list 'continue env)]
            [(break)
@@ -188,9 +218,9 @@
             env]
         ))]
       )])))
-;(define str-to-parse "a= 0; b= 0;for i in [1, 2, 3, 4, 5]:  a= a+i; if i < 3: break; else: pass;; b= b+ 2;;")
-(define str-to-parse "def f(b=0,c=1): global a; a=a+1;; a = 2; b = f();")
+(define str-to-parse "a= 0; b= 0;for i in [1, 2, 3, 4, 5]:  a= a+i; if i < 3: break; else: pass;; b= b+ 2;;")
+;(define str-to-parse "def f(b=0,c=1): global a; a=a+1; return a;; a = 2; b = f();")
 (define env empty-env)
 (eval-cmd (parse-string str-to-parse) env)
-;(parse-string str-to-parse)
+(parse-string str-to-parse)
 
