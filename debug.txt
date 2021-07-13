@@ -1,5 +1,5 @@
-0	g2267187	=	(g2267188)
-1	g2267188	=	(statements EOF)
+0	g21598	=	(g21599)
+1	g21599	=	(statements EOF)
 2	statements	=	(statement semicolon)
 3	statements	=	(statements statement semicolon)
 4	statement	=	(compoundstm)
@@ -56,7 +56,7 @@
 55	exps	=	(exps comma exp)
 56	exps	=	(exp)
 State 0
-	g2267187 -> . g2267188 
+	g21598 -> . g21599 
 
 	pass					shift	10
 	VAR					shift	6
@@ -64,22 +64,22 @@ State 0
 	continue					shift	12
 	if					shift	8
 	return					shift	9
+	g21599					goto	1
 	global					shift	15
 	simplestm					goto	4
 	compoundstm					goto	5
 	statements					goto	2
 	def					shift	13
-	g2267188					goto	1
 	print					shift	7
 	break					shift	11
 	statement					goto	3
 
 State 1
-	g2267187 -> g2267188 . 
+	g21598 -> g21599 . 
 
 
 State 2
-	g2267188 -> statements . EOF 
+	g21599 -> statements . EOF 
 	statements -> statements . statement semicolon 
 
 	pass					shift	10
@@ -207,7 +207,7 @@ State 16
 	semicolon					shift	44
 
 State 17
-	g2267188 -> statements EOF . 
+	g21599 -> statements EOF . 
 
 
 State 18
