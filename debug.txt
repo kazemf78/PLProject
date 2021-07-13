@@ -1,5 +1,5 @@
-0	g21598	=	(g21599)
-1	g21599	=	(statements EOF)
+0	g16509	=	(g16510)
+1	g16510	=	(statements EOF)
 2	statements	=	(statement semicolon)
 3	statements	=	(statements statement semicolon)
 4	statement	=	(compoundstm)
@@ -56,7 +56,7 @@
 55	exps	=	(exps comma exp)
 56	exps	=	(exp)
 State 0
-	g21598 -> . g21599 
+	g16509 -> . g16510 
 
 	pass					shift	10
 	VAR					shift	6
@@ -64,8 +64,8 @@ State 0
 	continue					shift	12
 	if					shift	8
 	return					shift	9
-	g21599					goto	1
 	global					shift	15
+	g16510					goto	1
 	simplestm					goto	4
 	compoundstm					goto	5
 	statements					goto	2
@@ -75,11 +75,11 @@ State 0
 	statement					goto	3
 
 State 1
-	g21598 -> g21599 . 
+	g16509 -> g16510 . 
 
 
 State 2
-	g21599 -> statements . EOF 
+	g16510 -> statements . EOF 
 	statements -> statements . statement semicolon 
 
 	pass					shift	10
@@ -207,7 +207,7 @@ State 16
 	semicolon					shift	44
 
 State 17
-	g21599 -> statements EOF . 
+	g16510 -> statements EOF . 
 
 
 State 18

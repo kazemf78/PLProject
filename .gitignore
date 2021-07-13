@@ -16,7 +16,7 @@
 # Compiled racket bytecode
 compiled/
 *.zo
-
+debug.txt
 # Dependency tracking files
 *.dep
 
