@@ -51,7 +51,7 @@
              )
              (
               params
-              ((VAR assign exp) (list 'paramdef $1 $3))
+              ((VAR assign exp) (list 'params (list 'paramdef $1 $3)))
               ((params comma VAR assign exp) (list 'params $1 (list 'paramdef $3 $5)))
              )
              (
@@ -119,7 +119,7 @@
              )
              (
               args
-              ((exp) $1)
+              ((exp) (list 'args $1))
               ((args comma exp) (list 'args $1 $3))
              )
              (

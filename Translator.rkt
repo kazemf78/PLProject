@@ -4,6 +4,21 @@
          "Parser.rkt"
          )
 
+(define (get-last lst)
+  (cond
+      [(null? (cdr lst)) (car lst)]
+      [else (get-last (cdr lst))]
+    )
+  )
+
+(define (modify-list lst keyword new-lst)
+  (cond
+    [(null? lst) new-lst]
+    [(not (eq? (car lst) keyword)) new-lst]
+    [else (modify-list (cadr lst) keyword (cons (get-last lst) new-lst))]
+  )
+)
+
 (define (extend-env-with-param env paramdefs)
   (cond
     [(null? paramdefs) env]
@@ -20,6 +35,24 @@
   )
 )
 
+(define (extend-env-with-param-args env paramdefs args)
+  (cond
+    [(null? paramdefs) env]
+    [(null? args) (extend-env-with-param env paramdefs)]
+    [else
+     (let ((first (car paramdefs)))
+       (let* (
+              (lhs (cadr first))
+              (argval (eval-exp (car args) global-env))
+              (new-env (env-assign env (cadr lhs) argval))
+             )
+              (extend-env-with-param-args new-env (cdr paramdefs) (cdr args))
+        )
+      )
+    ]
+  )
+)
+
 (define (change-var lst-var src-env dst-env)
   (cond
     [(null? lst-var) dst-env]
@@ -27,8 +60,8 @@
      (let* ((var (car lst-var))
            (val (env-get src-env var))
            (new-dst-env (env-assign dst-env var val)))
-           
-       (change-var (cdr lst-var) src-env new-dst-env)
+           (begin
+       (change-var (cdr lst-var) src-env new-dst-env))
        )]
     )
   )
@@ -116,13 +149,12 @@
               (ls (eval-exp (caddr exp) env)))
          (list-ref rs ls))]
       [(funccallwithoutarg)
-       (displayln "here we start")
        (let* (
               (func-var (cadr (cadr exp)))
               (whole-func (env-get env func-var))
               (func-param (cadr whole-func))
               (func-body (caddr whole-func))
-              (param-env (extend-env-with-param empty-env (cdr func-param)))
+              (param-env (extend-env-with-param empty-env func-param))
               (func-env (extend-env-func param-env func-var func-param func-body))
               (func-res (eval-func-cmd func-body func-env env '()))
               (new-func-env (car func-res))
@@ -130,21 +162,45 @@
               (new-env (change-var g-vars new-func-env env))
              )
          (begin
-           (displayln "did i get here also?")
+           (set! global-env new-env)
            (if (in-env? new-func-env "$")
                (env-get new-func-env "$")
-               ('none)
+               'none
            )
-         
-        )
          )
+        )
+       ]
+      [(funccall)
+       (let* (
+              (func-var (cadr (cadr exp)))
+              (whole-func (env-get env func-var))
+              (func-param (cadr whole-func))
+              (func-body (caddr whole-func))
+              (args-tmp (caddr exp))
+              (args (modify-list args-tmp 'args '()))
+              (param-env (extend-env-with-param-args empty-env func-param args))
+              (func-env (extend-env-func param-env func-var func-param func-body))
+              (func-res (eval-func-cmd func-body func-env env '()))
+              (new-func-env (car func-res))
+              (g-vars (cadr func-res))
+              (new-env (change-var g-vars new-func-env env))
+             )
+         (begin
+           (displayln param-env)
+           (set! global-env new-env)
+           (if (in-env? new-func-env "$")
+               (env-get new-func-env "$")
+               'none
+           )
+         )
+        )
        ]
       [(none)
        'none]
       )))
 
 (define break-flag #f)
-(define main-env empty-env)
+(define global-env empty-env)
 (define global-vars '() )
 
 (define eval-cmd
@@ -166,7 +222,10 @@
            [(assign)
             (let* ((lhs (cadr sub-cmd))
                    (rhs (caddr sub-cmd)))
-              (env-assign env (cadr lhs) (eval-exp rhs env)))]
+              (begin
+                (set! global-env env)
+                (define ret (eval-exp rhs env))
+                (env-assign global-env (cadr lhs) ret)))]
            [(if)
             (let* ((comp (eval-exp (cadr sub-cmd) env))
                    (ts (caddr sub-cmd))
@@ -207,11 +266,11 @@
                     )
                   )
                 (let* ((func-name (cadadr sub-cmd))
-                       (func-param (caddr sub-cmd))
+                       (func-param-tmp (caddr sub-cmd))
                        (func-stat (cadddr sub-cmd)))
                   (begin
                     ;((func-env (extend-env-with-param empty-env (cdr func-param))))
-                      (extend-env-func env func-name func-param func-stat)
+                      (extend-env-func env func-name (modify-list func-param-tmp 'params '()) func-stat)
                     
                   )
                 )
@@ -227,11 +286,7 @@
       )])))
 
 (define eval-func-cmd
-  (lambda (cmd env main-env g-vars)
-    (displayln "here i got, yay")
-    (displayln env)
-    (displayln cmd)
-    (displayln " ")
+  (lambda (cmd env main-env g-vars) 
     (case (car env)
       [(continue break)
          (list env g-vars)]
@@ -240,11 +295,6 @@
       [(statements)
        (begin
          (define ret (eval-func-cmd (cadr cmd) env main-env g-vars))
-         (display 'asgharAAAAAAAAAAAAAAAAA)
-         (displayln (cadr cmd))
-         (displayln 'beforeshit)
-         (displayln ret)
-         (displayln 'shit)
          (let ((new-env (car ret))
                (new-g-vars (cadr ret)))
          (eval-func-cmd (caddr cmd) new-env main-env new-g-vars)
@@ -256,7 +306,13 @@
            [(assign)
             (let* ((lhs (cadr sub-cmd))
                    (rhs (caddr sub-cmd)))
-              (list (env-assign env (cadr lhs) (eval-exp rhs env)) g-vars))]
+              (begin
+                (set! global-env env)
+                (define ret (eval-exp rhs env))
+                (list (env-assign global-env (cadr lhs) ret) g-vars)
+                )
+              ;(list (env-assign env (cadr lhs) (eval-exp rhs env)) g-vars)
+              )]
            [(if)
             (let* ((comp (eval-exp (cadr sub-cmd) env))
                    (ts (caddr sub-cmd))
@@ -274,7 +330,7 @@
                   (if (not break-flag)
                       (begin
                         (set! for-env (list (env-assign (car for-env) for-var i) g-vars))
-                        (set! for-env (eval-func-cmd for-stat for-env main-env g-vars))
+                        (set! for-env (eval-func-cmd for-stat (car for-env) main-env g-vars))
                         (case (caar for-env)
                           [(continue)
                            (set! for-env (list (cadar for-env)  (cadr for-env)))]
@@ -326,8 +382,9 @@
       )])))
 
 ;(define str-to-parse "a= 0; b= 0;for i in [1, 2, 3, 4, 5]:  a= a+i; if i < 3: break; else: pass;; b= b+ 2;;")
-(define str-to-parse "def f(b=0,c=1): global a; a=a+1; return a;; a = 2; b = f();")
+(define str-to-parse "def f(b=0,c=1,d=2,f=3): global a; a=a+1;if a < 5: b= f(4,5,6);else:pass;;; a = 2; b = f();")
+;(define str-to-parse "def f(b=0,c=1): global a; for i in [1, 2, 3, 4]:a=a+1;;; a = 2; b = f();")
 (define env empty-env)
 (eval-cmd (parse-string str-to-parse) env)
-(parse-string str-to-parse)
+;(parse-string str-to-parse)
 
