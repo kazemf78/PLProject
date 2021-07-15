@@ -77,7 +77,13 @@
       [(bool)
        (cadr exp)]
       [(var)
-       (env-get env (cadr exp))]
+       (let ((rhs(env-get env (cadr exp))))
+         (if (eqv? (car rhs) 'lazy)
+             (let* ((env (cadr rhs))
+                    (lazy-exp (caddr rhs)))
+               (eval-exp lazy-exp env))
+             rhs ))            
+       ]
       [(plus)
        (let* ((rs (eval-exp (cadr exp) env))
                (ls (eval-exp (caddr exp) env)))
@@ -91,11 +97,14 @@
                (ls (eval-exp (caddr exp) env)))
          (- rs ls))]
       [(mult)
-       (let* ((rs (eval-exp (cadr exp) env))
-               (ls (eval-exp (caddr exp) env)))
+       (let* ((rs (eval-exp (cadr exp) env)))
          (if (boolean? rs)
-             (and rs ls)
-             (* rs ls)))]
+             (if (eqv? rs #f)
+                 #f
+                 (and rs (eval-exp (caddr exp) env)))
+             (if (eqv? rs 0)
+                 0
+                 (* rs (eval-exp (caddr exp) env)))))]
       [(div)
        (let* ((rs (eval-exp (cadr exp) env))
               (ls (eval-exp (caddr exp) env)))
@@ -226,7 +235,7 @@
                    (rhs (caddr sub-cmd)))
               (begin
                 (set! global-env env)
-                (define ret (eval-exp rhs env))
+                (define ret (list 'lazy env rhs))
                 (env-assign global-env (cadr lhs) ret)))]
            [(if)
             (let* ((comp (eval-exp (cadr sub-cmd) env))
@@ -316,7 +325,7 @@
                    (rhs (caddr sub-cmd)))
               (begin
                 (set! global-env env)
-                (define ret (eval-exp rhs env))
+                (define ret (list 'lazy env rhs))
                 (list (env-assign global-env (cadr lhs) ret) g-vars)
                 )
               ;(list (env-assign env (cadr lhs) (eval-exp rhs env)) g-vars)
@@ -410,5 +419,6 @@
 ;(define str-to-parse "a= 0; b= 0;for i in [1, 2, 3, 4, 5]:  a= a+i; if i < 3: break; else: pass;; b= b+ 2;;")
 ;(define str-to-parse "def f(b=0,c=1,d=2,f=3): global a; a=a+1;if a < 5: b= f(4,5,6);else:pass;;; a = 2; b = f();")
 ;(eval-str str-to-parse)
+;(eval-str "a = 1/0; b= False * a; print(b);")
 ;(parse-string str-to-parse)
 
