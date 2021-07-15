@@ -1,5 +1,5 @@
-0	g661808	=	(g661809)
-1	g661809	=	(statements EOF)
+0	g161074	=	(g161075)
+1	g161075	=	(statements EOF)
 2	statements	=	(statement semicolon)
 3	statements	=	(statements statement semicolon)
 4	statement	=	(compoundstm)
@@ -11,7 +11,7 @@
 10	simplestm	=	(pass)
 11	simplestm	=	(break)
 12	simplestm	=	(continue)
-13	compoundstm	=	(print op exp cp)
+13	compoundstm	=	(print op atom cp)
 14	compoundstm	=	(def VAR op params cp colon statements)
 15	compoundstm	=	(def VAR op cp colon statements)
 16	compoundstm	=	(if exp colon statements else colon statements)
@@ -56,12 +56,13 @@
 55	exps	=	(exps comma exp)
 56	exps	=	(exp)
 State 0
-	g661808 -> . g661809 
+	g161074 -> . g161075 
 
 	pass					shift	10
 	VAR					shift	6
 	for					shift	14
 	continue					shift	12
+	g161075					goto	1
 	if					shift	8
 	return					shift	9
 	global					shift	15
@@ -71,15 +72,14 @@ State 0
 	def					shift	13
 	print					shift	7
 	break					shift	11
-	g661809					goto	1
 	statement					goto	3
 
 State 1
-	g661808 -> g661809 . 
+	g161074 -> g161075 . 
 
 
 State 2
-	g661809 -> statements . EOF 
+	g161075 -> statements . EOF 
 	statements -> statements . statement semicolon 
 
 	pass					shift	10
@@ -118,7 +118,7 @@ State 6
 	assign					shift	19
 
 State 7
-	compoundstm -> print . op exp cp 
+	compoundstm -> print . op atom cp 
 
 	op					shift	20
 
@@ -207,7 +207,7 @@ State 16
 	semicolon					shift	44
 
 State 17
-	g661809 -> statements EOF . 
+	g161075 -> statements EOF . 
 
 
 State 18
@@ -251,27 +251,14 @@ State 19
 	sum					goto	26
 
 State 20
-	compoundstm -> print op . exp cp 
+	compoundstm -> print op . atom cp 
 
-	conj					goto	23
-	disj					goto	22
-	not					shift	39
-	term					goto	27
 	ob					shift	38
-	None					shift	37
-	minus					shift	36
-	factor					goto	28
-	primary					goto	30
 	BOOL					shift	34
-	atom					goto	31
+	None					shift	37
 	VAR					shift	33
+	atom					goto	46
 	NUM					shift	32
-	plus					shift	35
-	comparison					goto	25
-	inversion					goto	24
-	exp					goto	46
-	power					goto	29
-	sum					goto	26
 
 State 21
 	compoundstm -> if exp . colon statements else colon statements 
@@ -629,7 +616,7 @@ State 45
 	semicolon					reduce	6
 
 State 46
-	compoundstm -> print op exp . cp 
+	compoundstm -> print op atom . cp 
 
 	cp					shift	68
 
@@ -968,7 +955,7 @@ State 67
 	sum					goto	26
 
 State 68
-	compoundstm -> print op exp cp . 
+	compoundstm -> print op atom cp . 
 
 	semicolon					reduce	13
 

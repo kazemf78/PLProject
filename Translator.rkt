@@ -4,6 +4,9 @@
          "Parser.rkt"
          )
 
+
+(provide eval-cmd)
+
 (define (get-last lst)
   (cond
       [(null? (cdr lst)) (car lst)]
@@ -385,6 +388,9 @@
 (define str-to-parse "def f(b=0,c=1,d=2,f=3): global a; a=a+1;if a < 5: b= f(4,5,6);else:pass;;; a = 2; b = f();")
 ;(define str-to-parse "def f(b=0,c=1): global a; for i in [1, 2, 3, 4]:a=a+1;;; a = 2; b = f();")
 (define env empty-env)
-(eval-cmd (parse-string str-to-parse) env)
+(define res (eval-cmd (parse-string str-to-parse) env))
+
+()
+
 ;(parse-string str-to-parse)
 

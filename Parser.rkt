@@ -3,6 +3,9 @@
   parser-tools/yacc
   )
 
+
+(provide parse-file)
+
 (define (decode-comp x)
  (case x
   [("==") 'equals]
@@ -43,7 +46,7 @@
              )
              (
               compoundstm
-              ((print op exp cp) (list 'print $3))
+              ((print op atom cp) (list 'print $3))
               ((def VAR op params cp colon statements) (list 'funcdef $2 $4 $7))
               ((def VAR op cp colon statements) (list 'funcdef $2 $6))
               ((if exp colon statements else colon statements) (list 'if $2 $4 $7))
@@ -142,21 +145,23 @@
 
 (define lex-this (lambda (lexer input) (lambda () (lexer input))))
 
-(define (parse-file path) (parse-port (open-input-file path)))
-(define (parse-port port) 
- (let
-;  ((my-lexer (lex-this simple-math-lexer (open-input-string path))))
-  ((my-lexer (lex-this simple-math-lexer port)))
-  (simple-math-parser my-lexer)
- )
- )
 (define parse-string
   (lambda (str)
     (let ((my-lexer(lex-this simple-math-lexer (open-input-string str))))
        (let ((parser-res (simple-math-parser my-lexer)))
          parser-res))))
+
+(define (parse-file path) (parse-port (open-input-file path)))
+(define (parse-port port) 
+ (let
+;  ((my-lexer (lex-this simple-math-lexer (open-input-string path)))
+  ((my-lexer (lex-this simple-math-lexer port)))
+  (simple-math-parser my-lexer)
+ )
+ )
+
 (provide parse-string)
-;(define str-to-parse "a=0;b=1; c= 10;")
+;(define str-to-parse "print(3);")
 ;(parse-string str-to-parse)
 ;(define str-to-parse "a=0;b=1; c= 10;")
 ;(parse-string str-to-parse)
