@@ -13,7 +13,7 @@
 (define (evaluate path)
 (eval-cmd (parse-file path) empty-env)
  )
-
+; if no results received use translator one
 (define CODE_PATH "Sample.txt")
 (define res (evaluate CODE_PATH))
 

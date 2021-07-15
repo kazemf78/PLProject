@@ -189,7 +189,6 @@
               (new-env (change-var g-vars new-func-env env))
              )
          (begin
-           (displayln param-env)
            (set! global-env new-env)
            (if (in-env? new-func-env "$")
                (env-get new-func-env "$")
@@ -285,6 +284,12 @@
             (list 'break env)]
            [(pass)
             env]
+           [(print)
+            (let* ((lhs (cadr sub-cmd)))
+              (begin
+                (displayln (eval-exp lhs env))
+                env))
+            ]
         ))]
       )])))
 
@@ -381,16 +386,29 @@
             (list (list 'break env) g-vars)]
            [(pass)
             (list env g-vars)]
+           [(print)
+            (let* ((lhs (cadr sub-cmd)))
+              (begin
+                (displayln (eval-exp lhs env))
+                (list env g-vars)))
+            ]
         ))]
       )])))
 
+(define (to-string s) s)
+
+(define (evaluate path)
+  (eval-cmd (parse-file path) empty-env)
+  )
+(define (eval-str cmd-str)
+  (eval-cmd (parse-string cmd-str) empty-env)
+)
+
+(define path "Sample.txt")
+(evaluate path)
+
 ;(define str-to-parse "a= 0; b= 0;for i in [1, 2, 3, 4, 5]:  a= a+i; if i < 3: break; else: pass;; b= b+ 2;;")
-(define str-to-parse "def f(b=0,c=1,d=2,f=3): global a; a=a+1;if a < 5: b= f(4,5,6);else:pass;;; a = 2; b = f();")
-;(define str-to-parse "def f(b=0,c=1): global a; for i in [1, 2, 3, 4]:a=a+1;;; a = 2; b = f();")
-(define env empty-env)
-(define res (eval-cmd (parse-string str-to-parse) env))
-
-()
-
+;(define str-to-parse "def f(b=0,c=1,d=2,f=3): global a; a=a+1;if a < 5: b= f(4,5,6);else:pass;;; a = 2; b = f();")
+;(eval-str str-to-parse)
 ;(parse-string str-to-parse)
 
