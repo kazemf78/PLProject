@@ -29,7 +29,7 @@
      (let ((first (car paramdefs)))
        (let* ((lhs (cadr first))
               (rhs (caddr first)))
-              (let ((new-env (env-assign env (cadr lhs) (list 'lazy env rhs))))
+              (let ((new-env (env-assign env (cadr lhs) (eval-exp rhs env))))
                 (extend-env-with-param new-env (cdr paramdefs))
                 )
         )
@@ -415,3 +415,10 @@
 
 (define path "Sample.txt")
 (evaluate path)
+
+;(define str-to-parse "a= 0; b= 0;for i in [1, 2, 3, 4, 5]:  a= a+i; if i < 3: break; else: pass;; b= b+ 2;;")
+;(define str-to-parse "def f(b=0,c=1,d=2,f=3): global a; a=a+1;if a < 5: b= f(4,5,6);else:pass;;; a = 2; b = f();")
+;(eval-str str-to-parse)
+;(eval-str "a = 1/0; b= False * a; print(b);")
+;(parse-string str-to-parse)
+
