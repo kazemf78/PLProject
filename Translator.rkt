@@ -29,7 +29,7 @@
      (let ((first (car paramdefs)))
        (let* ((lhs (cadr first))
               (rhs (caddr first)))
-              (let ((new-env (env-assign env (cadr lhs) (eval-exp rhs env))))
+              (let ((new-env (env-assign env (cadr lhs) (eval-exp rhs global-env))))
                 (extend-env-with-param new-env (cdr paramdefs))
                 )
         )
@@ -152,6 +152,7 @@
               (ls (eval-exp (caddr exp) env)))
          (list-ref rs ls))]
       [(funccallwithoutarg)
+       (set! global-env env)
        (let* (
               (func-var (cadr (cadr exp)))
               (whole-func (env-get env func-var))
@@ -159,10 +160,10 @@
               (func-body (caddr whole-func))
               (param-env (extend-env-with-param empty-env func-param))
               (func-env (extend-env-func param-env func-var func-param func-body))
-              (func-res (eval-func-cmd func-body func-env env '()))
+              (func-res (eval-func-cmd func-body func-env global-env '()))
               (new-func-env (car func-res))
               (g-vars (cadr func-res))
-              (new-env (change-var g-vars new-func-env env))
+              (new-env (change-var g-vars new-func-env global-env))
              )
          (begin
            (set! global-env new-env)
@@ -174,7 +175,9 @@
         )
        ]
       [(funccall)
+       (set! global-env env)
        (let* (
+    
               (func-var (cadr (cadr exp)))
               (whole-func (env-get env func-var))
               (func-param (cadr whole-func))
@@ -183,10 +186,10 @@
               (args (modify-list args-tmp 'args '()))
               (param-env (extend-env-with-param-args empty-env func-param args))
               (func-env (extend-env-func param-env func-var func-param func-body))
-              (func-res (eval-func-cmd func-body func-env env '()))
+              (func-res (eval-func-cmd func-body func-env global-env '()))
               (new-func-env (car func-res))
               (g-vars (cadr func-res))
-              (new-env (change-var g-vars new-func-env env))
+              (new-env (change-var g-vars new-func-env global-env))
              )
          (begin
            (set! global-env new-env)
@@ -410,7 +413,6 @@
 ;(define str-to-parse "a= 0; b= 0;for i in [1, 2, 3, 4, 5]:  a= a+i; if i < 3: break; else: pass;; b= b+ 2;;")
 (define str-to-parse "
 a = 4;
-c = 100000;
 
 def f():
     global a;
@@ -427,8 +429,6 @@ def f():
 
 b = f();
 print(b);
-print(a);
-print(c);
 b = f();
 print(b);
 ")
