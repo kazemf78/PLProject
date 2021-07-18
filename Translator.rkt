@@ -91,11 +91,14 @@
                (ls (eval-exp (caddr exp) env)))
          (- rs ls))]
       [(mult)
-       (let* ((rs (eval-exp (cadr exp) env))
-               (ls (eval-exp (caddr exp) env)))
+       (let* ((rs (eval-exp (cadr exp) env)))
          (if (boolean? rs)
-             (and rs ls)
-             (* rs ls)))]
+             (if (eqv? rs #f)
+                 #f
+                 (and rs (eval-exp (caddr exp) env)))
+             (if (eqv? rs 0)
+                 0
+                 (* rs (eval-exp (caddr exp) env)))))]
       [(div)
        (let* ((rs (eval-exp (cadr exp) env))
               (ls (eval-exp (caddr exp) env)))
