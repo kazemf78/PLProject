@@ -264,7 +264,7 @@
                 (let* ((func-name (cadadr sub-cmd))
                        (func-stat (caddr sub-cmd)))
                   (begin
-                    (extend-env-func env func-name empty-env func-stat)
+                    (extend-env-func env func-name '() func-stat)
                     )
                   )
                 (let* ((func-name (cadadr sub-cmd))
@@ -356,14 +356,14 @@
             
               (if (eq? (length sub-cmd) 2)
                   (let* (
-                         (ret-exp (cadr sub-cmd))
-                         (ret-val (eval-exp ret-exp env))
-                        )
+                         (ret-exp (cadr sub-cmd)))
                     (begin
-                      (list (env-assign env "$" ret-val) g-vars)
-                     )
-                   )
-                  (list env g-vars) 
+                         (set! global-env env)
+                         (define ret (eval-exp ret-exp env))
+                         (list (env-assign global-env "$" ret) g-vars)
+                         )
+                    )
+                  (list env g-vars)
                )
              
             ]
@@ -404,11 +404,34 @@
   (eval-cmd (parse-string cmd-str) empty-env)
 )
 
-(define path "Sample.txt")
-(evaluate path)
+;(define path "Sample.txt")
+;(evaluate path)
 
 ;(define str-to-parse "a= 0; b= 0;for i in [1, 2, 3, 4, 5]:  a= a+i; if i < 3: break; else: pass;; b= b+ 2;;")
-;(define str-to-parse "def f(b=0,c=1,d=2,f=3): global a; a=a+1;if a < 5: b= f(4,5,6);else:pass;;; a = 2; b = f();")
-;(eval-str str-to-parse)
+(define str-to-parse "
+a = 4;
+c = 100000;
+
+def f():
+    global a;
+    print(a);
+    if a == 0:
+    	return 5;
+    else:
+    	a = a - 1;
+    	return f();
+;;
+
+
+
+
+b = f();
+print(b);
+print(a);
+print(c);
+b = f();
+print(b);
+")
+(eval-str str-to-parse)
 ;(parse-string str-to-parse)
 

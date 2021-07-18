@@ -32,7 +32,7 @@
     (extend-env (replace-var (cadddr env) var val) (cadr env) (caddr env))
    )]
   [(extend-func)
-   (replace-var (cadddr (cdr env)) var val)
+   (extend-env-func (replace-var (cadddr (cdr env)) var val) (cadr env) (caddr env) (cadddr env))
   ]
   [(empty) (raise "variable is not defined")]
   [else (raise "enviroment is not valid")]
